@@ -1,0 +1,90 @@
+<!-- PAGE TITLE -->
+<h2 class="page-title">Our Premium Products</h2>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+    <input type="text" [(ngModel)]="searchText"
+        placeholder="Search products...">
+
+    <select [(ngModel)]="selectedCategory">
+        <option value="All">All</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Fashion">Fashion</option>
+        <option value="Home">Home</option>
+    </select>
+
+    <select [(ngModel)]="sortBy">
+        <option value="none">Sort</option>
+        <option value="popularity">Popularity</option>
+        <option value="rating">Rating</option>
+        <option value="newest">Newest</option>
+        <option value="lh">Low → High</option>
+        <option value="hl">High → Low</option>
+    </select>
+</div>
+
+<!-- PRODUCT GRID -->
+<div class="products-container">
+    <div class="product-card" *ngFor="let p of filteredProducts">
+
+        <div class="image-wrapper">
+            <img [src]="p.img" (click)="openQuickView(p)" />
+            <span class="tag" *ngIf="p.bestSeller">Best Seller</span>
+            <span class="tag new" *ngIf="p.newArrival">New</span>
+
+            <span class="wishlist"
+                [class.active]="isWishlisted(p)"
+                (click)="toggleWishlist(p); $event.stopPropagation();">
+                ♥
+            </span>
+        </div>
+
+        <h3 class="product-name">{{ p.name }}</h3>
+
+        <div class="price-row">
+            <span class="new-price">₹ {{ p.price - (p.price * p.discount / 100)
+                }}</span>
+            <span class="old-price" *ngIf="p.discount">₹ {{ p.price }}</span>
+        </div>
+
+        <div class="rating-row">⭐ {{ p.rating }}</div>
+
+        <div class="color-row" *ngIf="p.colors?.length">
+            <span *ngFor="let c of p.colors" class="color-circle"
+                [style.background]="c"></span>
+        </div>
+
+        <button class="btn-add"
+            (click)="animateAddToCart(p); addToCart(p); $event.stopPropagation();">
+            Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- CART SECTION -->
+<h3 class="section-title" *ngIf="cart.length">🛒 Cart</h3>
+<div class="cart-section" *ngIf="cart.length">
+    <div class="cart-item" *ngFor="let c of cart">
+        <img class="cart-img" [src]="c.img">
+
+        <div class="cart-info">
+            <h4>{{ c.name }}</h4>
+            <p>₹ {{ c.price }}</p>
+        </div>
+
+        <div class="qty-controls">
+            <button (click)="decreaseQty(c)">−</button>
+            <span>{{ c.qty }}</span>
+            <button (click)="increaseQty(c)">+</button>
+        </div>
+    </div>
+</div>
+
+<!-- RECENTLY VIEWED -->
+<h3 class="section-title" *ngIf="recentlyViewed.length">Recently Viewed</h3>
+<div class="recent-items" *ngIf="recentlyViewed.length">
+    <div class="recent-card" *ngFor="let r of recentlyViewed">
+        <img [src]="r.img">
+        <p>{{ r.name }}</p>
+    </div>
+</div>
